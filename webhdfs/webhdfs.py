@@ -188,6 +188,17 @@ class WebHDFS(object):
         httpClient.close()
         return files
     
+    def get_content_summary(self,path):
+        url_path = WEBHDFS_CONTEXT_ROOT + path+'?op=GETCONTENTSUMMARY&user.name='+self.username
+        logger.debug("Get Content Summary: " + url_path)
+        httpClient = self.__getNameNodeHTTPClient()
+        httpClient.request('GET', url_path , headers={})
+        response = httpClient.getresponse()
+        logger.debug("HTTP Response: %d, %s"%(response.status, response.reason))
+        data_dict = json.loads(response.read())
+        logger.debug("Data: " + str(data_dict))
+        return data_dict
+
     def __getNameNodeHTTPClient(self):
         httpClient = httplib.HTTPConnection(self.namenode_host, 
                                             self.namenode_port, 
